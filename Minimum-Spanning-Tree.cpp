@@ -12,37 +12,75 @@
 //		An array "lowcost", which shows the lowest cost between the unchosen vertexes and the spanning tree.
 
 # define INF 1000010;
+
 void Prim(MGraph g, int v0, int &sum)
 {
-	int lowcost[MAXSIZE], vset[MAXSIZE], v;
+	int lowcost[MAXSIZE], vset[MAXSIZE];
+	int i, j, k min;
 	
-	
-	for (int i = 0; i < g.n; i ++ )
+	for (i = 0; i < g.n; i ++ )
 	{
-		lowcost = g.edges[v0][i];
+		lowcost[i] = g.edges[i][v0];
 		vset[i] = 0;
 	}
 	
 	vset[v0] = 1;
 	sum = 0;
 	
-	for (int i = 0; i < g.n - 1; i ++ )
+	for (i = 0; i < g.n - 1; i ++ )
 	{
 		min = INF;
-		for (int j = 0; j < g.n; j ++ )
+		for (j = 0; j < g.n; j ++ )
 		{
 			if (vset[j] == 0 && lowcost[j] < min)
 			{
-				min = lowcost[j];
 				k = j;
+				min = lowcost[j];
 			}
 		}
-
-		vset[k] = 1;
-		sum += lowcost[k];
 		
-		for (int j = 0; j < g.n; j ++ )
-			if (vset[j] == 0 && g.edges[k][j] < lowcost[j])
-					lowcost = g.edges[k][j];
+		vset[k] = 1;
+		sum += min;
+		
+		for (j = 0; j < g.n; j ++ )
+		{
+			if (vset[j] == 0 && g.edges[j][k] < lowcost[j]) 
+				lowcost[j] = g.edges[j][k];
+		}
+
+	}
+}
+
+
+// ========"Kruskal"========
+typedef struct
+{
+	int a, b;
+	int w;
+}Road;
+Road road[MAXSIZE];
+int v[MAXSIZE];
+int getRoot(int a)
+{
+	while (a != v[a]) a = v[a];
+	return a;
+}
+
+void Kruskal(MGraph g, int &sum, Road road())
+{
+	int i; 
+	int N = g.n, E = g.e, a, b;
+	sum = 0;
+	for (i = 0; i < N; i ++ ) v[i] = i;
+	sort(road, E);
+	for (i = 0; i < E; i ++ )
+	{
+		a = getRoot(road[i].a);
+		b = getRoot(road[i].b);
+		if (a != b)
+		{
+			v[a] = b;
+			sum += road[i].w;
+		}
 	}
 }
